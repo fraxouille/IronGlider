@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
+
+    <Button
+        android:id="@+id/buttonNewGame"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_marginTop="36dp"
+        android:minHeight="44dp"
+        android:text="@string/NewGame"
+        android:onClick="newGame" />    
+    
+    <Button
+        android:id="@+id/buttonResume"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/buttonNewGame"
+        android:layout_below="@+id/buttonNewGame"
+        android:minHeight="44dp"
+        android:text="@string/ResumeGame"
+        android:onClick="resumeGame" />
+
+    <Button
+        android:id="@+id/buttonOptions"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/buttonResume"
+        android:layout_below="@+id/buttonResume"
+        android:minHeight="44dp"
+        android:text="@string/OptionsButton"
+        android:onClick="optionsWindow" />
+
+    <Button
+        android:id="@+id/buttonExit"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/buttonOptions"
+        android:layout_below="@+id/buttonOptions"
+        android:minHeight="44dp"
+        android:text="@string/ExitButton"
+        android:onClick="exitProgram" />
+
+</RelativeLayout>
