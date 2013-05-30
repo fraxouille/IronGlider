@@ -6,26 +6,25 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-public class GameCode implements Runnable {
+public class GameCode implements Runnable, SensorEventListener {
 	
 	GameView gameView;
 	Iron iron;
 	SensorManager sm;
 	Sensor acc;
-	SensorEventListener sl = new SensorEventListener() {		
-		@Override
+//	SensorEventListener sl = new SensorEventListener() {		
+//		@Override
 		public void onSensorChanged(SensorEvent event) {
 			float[] last = new float[3];
 			gameView.updateSensors(last, event.values);
 			Log.i("VALUES=", event.values[0] + " / " + event.values[1]);
 			//Toast.makeText(gameView.getContext(), "VALUES=" + event.values[0] + " / " + event.values[1] , 1000).show();
 		}		
-		@Override
+//		@Override
 		public void onAccuracyChanged(Sensor sensor, int accuracy) {			
 		}
-	};
+//	};
 	
 	
 	public GameCode(GameView v, Iron i, SensorManager sm)
@@ -33,7 +32,7 @@ public class GameCode implements Runnable {
 		this.gameView = v;
 		this.iron = i;
 		this.sm = sm;
-		sm.registerListener(sl, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+		sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 	}
 	
 	public void run()
@@ -52,6 +51,16 @@ public class GameCode implements Runnable {
 	{
 		Log.i("DRAW", "DONE");
 		gameView.invalidate();
+	}
+	
+	public void onPause()
+	{
+		sm.unregisterListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+	}
+	
+	public void onResume()
+	{
+		sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
 }
