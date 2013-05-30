@@ -2,8 +2,6 @@ package com.example.ironglider;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.app.Activity;
@@ -49,6 +47,12 @@ public class Game extends Activity {
 	{
 		super.onPause();
 		gameIsRunning = false;
+	}
+	
+	@Override
+	protected void onStart()
+	{
+		gameIsRunning = true;
 	}
 	
 }

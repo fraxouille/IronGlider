@@ -8,7 +8,13 @@ import android.util.Log;
 import android.view.View;
 
 public class GameCode implements Runnable, SensorEventListener {
+
+	public static enum GameState
+	{
+		launch, fly, ground
+	};
 	
+	GameState gameState;
 	GameView gameView;
 	Iron iron;
 	SensorManager sm;
@@ -32,6 +38,7 @@ public class GameCode implements Runnable, SensorEventListener {
 		this.gameView = v;
 		this.iron = i;
 		this.sm = sm;
+		gameState = GameState.launch;
 		sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 	}
 	
@@ -45,6 +52,12 @@ public class GameCode implements Runnable, SensorEventListener {
 	{
 		Log.i("UPDATE", "DONE");
 		iron.x++;
+		switch (gameState)
+		{
+		case launch:{ break;}
+		case fly:{break;}
+		case ground:{break;}
+		}
 	}
 	
 	private void Draw()
