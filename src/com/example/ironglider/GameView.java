@@ -36,18 +36,10 @@ public class GameView extends View {
 		this.iron = i;
 	}
 	
-	public void updateSensors(float[] last, float[] current)
+	public void debug(float[] s)
 	{
-		sensors[0] = current[0];
-		sensors[1] = current[1];
-		
-		//if (last[0] != current[0] && last[1] != current[1])
-		{
-
-			iron.y += current[1] / 10;
-						
-		}
-		
+		sensors[0] = s[0];
+		sensors[1] = s[1];
+		sensors[2] = s[2];
 	}
-
 }

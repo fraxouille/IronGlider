@@ -52,6 +52,7 @@ public class Game extends Activity {
 	@Override
 	protected void onStart()
 	{
+		super.onStart();
 		gameIsRunning = true;
 	}
 	
