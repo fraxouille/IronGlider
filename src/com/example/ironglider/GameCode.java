@@ -4,7 +4,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 import android.view.View;
 
 public class GameCode implements Runnable, SensorEventListener {
@@ -14,19 +13,20 @@ public class GameCode implements Runnable, SensorEventListener {
 		launch, fly, ground
 	};
 	
-	GameState gameState;
+	public static GameState gameState = GameState.fly;;
+	
 	GameView gameView;
 	Iron iron;
+	float[] launchLine;
 	SensorManager sm;
-	Sensor acc;
 	float[] sensors = new float[3];
 	
-	public GameCode(GameView v, Iron i, SensorManager sm)
+	public GameCode(GameView v, Iron i, float[] l,SensorManager sm)
 	{
 		this.gameView = v;
 		this.iron = i;
+		this.launchLine = l;
 		this.sm = sm;
-		gameState = GameState.fly;
 		sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 	}	
 
@@ -51,7 +51,7 @@ public class GameCode implements Runnable, SensorEventListener {
 		{
 		case launch:{ break;}
 		case fly:{
-			iron.x++;
+			iron.x += sensors[1];
 			iron.y += sensors[0];
 			break;}
 		case ground:{break;}
@@ -60,7 +60,6 @@ public class GameCode implements Runnable, SensorEventListener {
 	
 	private void Draw()
 	{
-		Log.i("DRAW", "DONE");
 		gameView.invalidate();
 	}
 	
