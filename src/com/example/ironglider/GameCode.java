@@ -1,25 +1,25 @@
 package com.example.ironglider;
 
+import com.example.ironglider.Game.GameState;
+
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 import android.view.View;
 
 public class GameCode implements Runnable, SensorEventListener {
-
-	public static enum GameState
-	{
-		launch, fly, ground
-	};
-	
-	public static GameState gameState = GameState.fly;;
 	
 	GameView gameView;
 	Iron iron;
 	float[] launchLine;
 	SensorManager sm;
 	float[] sensors = new float[3];
+	float launchAngle;
+	float initialSpeed = 60f;
+	boolean launching = false;
+	float time = 0;
 	
 	public GameCode(GameView v, Iron i, float[] l,SensorManager sm)
 	{
@@ -27,7 +27,7 @@ public class GameCode implements Runnable, SensorEventListener {
 		this.iron = i;
 		this.launchLine = l;
 		this.sm = sm;
-		sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+		sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
 	}	
 
 	public void onSensorChanged(SensorEvent event) {
@@ -47,14 +47,30 @@ public class GameCode implements Runnable, SensorEventListener {
 	private void Update(View view, Iron iron)
 	{
 		gameView.debug(sensors);
-		switch (gameState)
+		switch (Game.gameState)
 		{
-		case launch:{ break;}
+		case launch:{
+			launchAngle = -sensors[0]/10 + 0.8f;
+			if (launchAngle > 1.3) launchAngle = 1.3f;
+			if (launchAngle < 0) launchAngle = 0;
+			
+			launchLine[0] = 100*(float) Math.cos(launchAngle);
+			launchLine[1] = 100*(float) Math.sin(launchAngle);
+			Log.i("ANGLE", String.valueOf(launchAngle));
+			break;}
 		case fly:{
-			iron.x += sensors[1];
-			iron.y += sensors[0];
+			iron.x = (float) (initialSpeed * Math.cos(launchAngle)) * time + 20;
+			iron.y = (float) -((-9.8/2 * time * time) + (initialSpeed * Math.sin(launchAngle) * time)) + iron.defaultY;
+			time+=0.2;
+			if (iron.y >= 220 - iron.height)
+				Game.gameState = Game.GameState.ground;
+			
+			
+			//iron.x += sensors[1];
+			//iron.y += sensors[0];
 			break;}
 		case ground:{break;}
+		case pause:{break;}
 		}
 	}
 	

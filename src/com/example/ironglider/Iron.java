@@ -7,15 +7,19 @@ import android.graphics.Paint;
 
 public class Iron {
 
-	float x, y;
+	public int defaultY = 120;
+	public float x, y;
+	public int width, height;
 	Bitmap ironbmp;
 	Paint p = new Paint();
 	
 	public Iron(Resources r)
 	{
-		x = 100;
-		y = 50;
+		x = 20;
+		y = defaultY;
 		ironbmp = BitmapFactory.decodeResource(r, R.drawable.iron);
+		this.width = ironbmp.getWidth();
+		this.height = ironbmp.getHeight();
 	}
 	
 }

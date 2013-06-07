@@ -8,7 +8,14 @@ import android.app.Activity;
 
 
 public class Game extends Activity {
-
+	
+	public static enum GameState
+	{
+		launch, fly, ground, pause
+	};
+	
+	public static GameState gameState;
+	
 	final long FPS = 20;
 	Timer timer = new Timer();
 	GameCode gameCode;
@@ -20,8 +27,9 @@ public class Game extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_screen);
 		GameView gameView = (GameView) findViewById(R.id.gameView);
+		gameState = GameState.launch;
 		Iron iron = new Iron(getResources());
-		float[] launchLine = {0,0};
+		float[] launchLine = {150,iron.defaultY+25};
 		sm = (SensorManager)getSystemService(android.content.Context.SENSOR_SERVICE);
 		gameCode = new GameCode(gameView, iron, launchLine, sm);
 		gameView.registerObject(iron, launchLine);
