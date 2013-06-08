@@ -1,7 +1,5 @@
 package com.example.ironglider;
 
-import com.example.ironglider.Game.GameState;
-
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
