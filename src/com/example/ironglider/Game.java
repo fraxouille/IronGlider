@@ -29,10 +29,11 @@ public class Game extends Activity {
 		GameView gameView = (GameView) findViewById(R.id.gameView);
 		gameState = GameState.launch;
 		Iron iron = new Iron(getResources());
+		Ground ground = new Ground(getResources());
 		float[] launchLine = {150,iron.defaultY+25};
 		sm = (SensorManager)getSystemService(android.content.Context.SENSOR_SERVICE);
-		gameCode = new GameCode(gameView, iron, launchLine, sm);
-		gameView.registerObject(iron, launchLine);
+		gameCode = new GameCode(gameView, iron, ground, launchLine, sm);
+		gameView.registerObject(iron, launchLine, ground);
 		
 		gameIsRunning = true;
 	}

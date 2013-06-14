@@ -1,10 +1,8 @@
 package com.example.ironglider;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -14,14 +12,13 @@ public class GameView extends View {
 	
 	// 480 * 320
 	Iron iron;
+	Ground ground;
 	Paint paintBlack= new Paint();
 	Paint paintWhite = new Paint();
 	Paint paintRed = new Paint();
 	Paint paintBrown = new Paint();
 	float[] sensors = new float[3];
 	float[] launchLine;
-	Bitmap bmp;
-
 	
 	public GameView(Context context, AttributeSet attrs)
 	{
@@ -34,20 +31,18 @@ public class GameView extends View {
 		paintBrown.setColor(Color.rgb(150, 90, 10));
 		paintBrown.setStrokeWidth(10);
 		this.setOnClickListener(clic);
-		bmp = iron.ironbmp;
 	}
 	
 	@Override
 	protected void onDraw(Canvas c)
 	{
 		super.onDraw(c);
-		
-		bmp = RotateBitmap(bmp, 10f);
-		
-		
-		c.drawBitmap(bmp/*iron.ironbmp*/, iron.x, iron.y, iron.p);
-		c.drawText("x=" + sensors[0] + "  y=" + sensors[1]+ "  z=" + sensors[2], 0, 20, paintBlack);	
-		c.drawLine(0, 220, 500, 220, paintBrown);
+		for (int i = 0; i < 10; i++)
+		{
+			c.drawBitmap(ground.groundBmp, ground.x + i * ground.width, ground.y, paintWhite);
+		}
+		c.drawBitmap(iron.ironbmp, iron.xView, iron.yView, iron.p);
+		c.drawText("x=" + sensors[0] + "  y=" + sensors[1]+ "  z=" + sensors[2], 0, 20, paintBlack);
 
 		switch (Game.gameState)
 		{
@@ -61,12 +56,12 @@ public class GameView extends View {
 				
 				break;
 			}
-			case ground :
+			case ground:
 			{
-				
+				c.drawText("Vous avez parcouru "+iron.x +"m", 100, 100, paintBlack);
 				break;
 			}
-			case pause :
+			case pause:
 			{
 				c.drawRect(getWidth()/2 - 60, getHeight()/2-20, getWidth()/2 +60, getHeight()/2 +20, paintBlack);
 				c.drawText("PAUSE", getWidth()/2 - 25, getHeight()/2 +5, paintWhite);
@@ -75,10 +70,11 @@ public class GameView extends View {
 		}
 	}
 	
-	public void registerObject(Iron i, float[] l)
+	public void registerObject(Iron i, float[] l, Ground g)
 	{
 		this.iron = i;
 		this.launchLine = l;
+		this.ground = g;
 	}
 	
 	public void debug(float[] s)
@@ -86,13 +82,6 @@ public class GameView extends View {
 		sensors[0] = s[0];
 		sensors[1] = s[1];
 		sensors[2] = s[2];
-	}
-	
-	public static Bitmap RotateBitmap(Bitmap source, float angle)
-	{
-	      Matrix matrix = new Matrix();
-	      matrix.postRotate(angle);
-	      return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
 	}
 	
 	private OnClickListener clic = new OnClickListener() {

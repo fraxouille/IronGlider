@@ -11,18 +11,20 @@ public class GameCode implements Runnable, SensorEventListener {
 	
 	GameView gameView;
 	Iron iron;
+	Ground ground;
 	float[] launchLine;
 	SensorManager sm;
 	float[] sensors = new float[3];
 	float launchAngle;
-	float initialSpeed = 60f;
+	float initialSpeed = 100f;
 	boolean launching = false;
 	float time = 0;
 	
-	public GameCode(GameView v, Iron i, float[] l,SensorManager sm)
+	public GameCode(GameView v, Iron i, Ground g, float[] l,SensorManager sm)
 	{
 		this.gameView = v;
 		this.iron = i;
+		this.ground = g;
 		this.launchLine = l;
 		this.sm = sm;
 		sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
@@ -56,18 +58,33 @@ public class GameCode implements Runnable, SensorEventListener {
 			launchLine[1] = 100*(float) Math.sin(launchAngle);
 			Log.i("ANGLE", String.valueOf(launchAngle));
 			break;}
+		
 		case fly:{
 			iron.x = (float) (initialSpeed * Math.cos(launchAngle)) * time + 20;
+			if (iron.x < 200)
+				iron.xView = iron.x;
+			else
+				ground.x = - iron.x + 200;
+			
+			if (ground.x < - ground.width)
+				ground.x -= (int)(ground.x / ground.width) * ground.width;
+			
 			iron.y = (float) -((-9.8/2 * time * time) + (initialSpeed * Math.sin(launchAngle) * time)) + iron.defaultY;
-			time+=0.2;
+			iron.yView = iron.y;
+			
 			if (iron.y >= 220 - iron.height)
+			{
+				iron.y = 220;
 				Game.gameState = Game.GameState.ground;
-			
-			
-			//iron.x += sensors[1];
-			//iron.y += sensors[0];
+			}
+			time+=0.2;	
 			break;}
-		case ground:{break;}
+		
+		case ground:{
+			
+			
+			break;}
+		
 		case pause:{break;}
 		}
 	}
