@@ -9,14 +9,16 @@ import android.graphics.Paint;
 public class Iron {
 
 	public final int defaultX = -50;
-	public final int defaultY = 150;
+	public final int defaultY = 220;
 	private final int groundHeight = 300;
 	public float x, y;
+	private float verticalSpeed;
 	public float xView, yView;
 	public int width, height;
 	private Bitmap ironbmp, steambmp;
 	private Paint p = new Paint();
 	public boolean isSteamOn = false;
+	private boolean firstStart = true;
 	
 	public Iron(Resources r)
 	{
@@ -24,27 +26,41 @@ public class Iron {
 		y = defaultY;
 		yView = y;
 		xView = x;
+		verticalSpeed = 0f;
 		ironbmp = BitmapFactory.decodeResource(r, R.drawable.iron);
 		this.width = ironbmp.getWidth();
 		this.height = ironbmp.getHeight();
 		steambmp = BitmapFactory.decodeResource(r, R.drawable.vapeur);
 	}
 
-	public void update(float initialSpeed, float launchAngle, float gravity, int XPositionOfFlyingIron,float time)
+	public void update(float initialSpeed, float launchAngle, int XPositionOfFlyingIron, float time)
 	{
 		if (isSteamOn && GameContent.fuel > 0)
-			GameContent.fuel -= 1;		
-		
+		{
+			GameContent.fuel -= 1;
+			verticalSpeed -=0.5;
+		}
+
 		x = (float) (initialSpeed * Math.cos(launchAngle)) * time + defaultX;
-		
 		if (x < XPositionOfFlyingIron)
 			xView = x;	
+
+		if (firstStart)
+		{
+			y = defaultY;
+			verticalSpeed = -(float) (initialSpeed * Math.sin(launchAngle))/8;
+			firstStart = false;
+		}	
+		else
+		{
+			verticalSpeed += 0.2;
+			y += verticalSpeed;
+		}
 		
-		y = (float) -((-gravity/2 * time * time)
-				+ (initialSpeed * Math.sin(launchAngle) * time)
-				)
-				+ defaultY
-				;
+/*		y = (float) -((-gravity/2 * time * time)
+				+ (initialSpeed * Math.sin(launchAngle) * time)*0	)
+				+ defaultY;
+*/				
 		yView = y;
 		
 		if (y >= groundHeight - height)

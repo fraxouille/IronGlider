@@ -11,7 +11,7 @@ public class Game extends Activity {
 	
 	public static enum GameState
 	{
-		launch, fly, ground, pause
+		launch, fly, ground, pause, stop, restart
 	};
 	
 	public static GameState gameState;
@@ -45,6 +45,13 @@ public class Game extends Activity {
 		{
 			public void run()
 			{
+				if (gameState == GameState.stop)
+					finish();
+				if (gameState == GameState.restart)
+				{
+					finish();
+					startActivity(getIntent());
+				}
 				if (gameIsRunning)
 				runOnUiThread(gameCode);
 			}

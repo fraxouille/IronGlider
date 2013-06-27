@@ -1,5 +1,7 @@
 package com.example.ironglider;
 
+import com.example.ironglider.Game.GameState;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,11 +23,12 @@ public class GameView extends View {
 	Bitmap pausebmp;
 	Paint paintBlack= new Paint();
 	Paint paintWhite = new Paint();
+	Paint paintWhiteBold = new Paint();
 	Paint paintRed = new Paint();
 	Paint paintFuel = new Paint();
 	float[] sensors = new float[3];
 	float[] launchLine;
-	int pauseTimer = 0;
+	int pauseTimer;
 	
 	public GameView(Context context, AttributeSet attrs)
 	{
@@ -34,11 +37,15 @@ public class GameView extends View {
 		paintBlack.setColor(Color.BLACK);
 		paintWhite.setColor(Color.WHITE);
 		paintWhite.setTextSize(16);
+		paintWhiteBold.setColor(Color.WHITE);
+		paintWhiteBold.setTextSize(20);
+		paintWhiteBold.setStrokeWidth(2);
 		paintRed.setColor(Color.RED);
 		paintRed.setStrokeWidth(4);
 		paintFuel.setColor(Color.GREEN);
 		paintFuel.setStrokeWidth(15);
 		this.setOnTouchListener(clic);
+		pauseTimer = 0;
 	}
 	
 	@Override
@@ -67,7 +74,12 @@ public class GameView extends View {
 			}
 			case ground:
 			{
-				c.drawText("Vous avez parcouru "+iron.x +"m", 100, 100, paintBlack);
+				float score = (float)((int)(iron.x*100))/100;
+				c.drawRect(getWidth()/2 - 130, getHeight()/2-55, getWidth()/2 +130, getHeight()/2 +70, paintBlack);
+				c.drawText("Vous avez parcouru", getWidth()/2 - 70, getHeight()/2 -30, paintWhite);
+				c.drawText(score +"m", getWidth()/2 - 35, getHeight()/2, paintWhiteBold);
+				c.drawText("Retry                              Menu", getWidth()/2 - 100, getHeight()/2 + 50, paintWhite);
+
 				break;
 			}
 			case pause:
@@ -77,6 +89,7 @@ public class GameView extends View {
 				pauseTimer++;
 				break;
 			}
+			default:{break;}
 		}
 	}
 	
@@ -114,10 +127,16 @@ public class GameView extends View {
 		    				iron.isSteamOn = false;
 		    		}
 		    	}
-		    	case ground : break;
+		    	case ground : {
+		    		if (e.getX() > 110 && e.getX() < 220 && e.getY() > 180 && e.getY() < 240)
+		    			Game.gameState = GameState.restart;
+		    		if (e.getX() > 260 && e.getX() < 370 && e.getY() > 180 && e.getY() < 240)
+		    			Game.gameState = GameState.stop;		    		
+		    		break;}
 		    	case pause : {
 		    		if (pauseTimer >=10)
 		    			{Game.gameState = Game.GameState.fly; pauseTimer=0; break;}}
+				default:{break;}		
 		    	}
 	    	}
 	    	else if (e.getAction() == MotionEvent.ACTION_UP)

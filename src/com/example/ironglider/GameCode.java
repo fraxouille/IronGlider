@@ -17,10 +17,8 @@ public class GameCode implements Runnable, SensorEventListener {
 	SensorManager sm;
 	float[] sensors = new float[3];
 	float launchAngle;
-	float initialSpeed = 100f;
-	float time = 0;
-	float gravity = 9.8f;
-	float fuel;
+	float initialSpeed;
+	float time;
 	
 	public GameCode(GameView v, GameContent g,SensorManager sm)
 	{
@@ -31,6 +29,8 @@ public class GameCode implements Runnable, SensorEventListener {
 		this.launchLine = g.launchLine;
 		this.clouds = g.clouds;
 		this.background = g.background;
+		initialSpeed = 100f;
+		time = 0;
 		
 		this.sm = sm;
 		sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
@@ -66,15 +66,8 @@ public class GameCode implements Runnable, SensorEventListener {
 
 			break;}
 		
-		case fly:{
-			if (iron.isSteamOn)
-				{gravity -= 0.1;}
-			else{
-				gravity += 0.1;
-				if (gravity > 9.8f) gravity = 9.8f;
-			}
-			
-			iron.update(initialSpeed, launchAngle, gravity, XPositionOfFlyingIron, time);
+		case fly:{		
+			iron.update(initialSpeed, launchAngle, XPositionOfFlyingIron, time);
 			ground.update(iron.x, XPositionOfFlyingIron);
 			clouds.update();
 			
@@ -87,6 +80,7 @@ public class GameCode implements Runnable, SensorEventListener {
 			break;}
 		
 		case pause:{break;}
+		default:{break;}
 		}
 	}
 	

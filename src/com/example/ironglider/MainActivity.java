@@ -26,11 +26,6 @@ public class MainActivity extends Activity {
 		startActivity(i);	
 	}
 	
-	public void resumeGame(View v) {
-		
-		
-	}
-	
 	public void optionsWindow(View v) {
 		
 		

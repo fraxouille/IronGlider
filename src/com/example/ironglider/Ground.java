@@ -8,13 +8,15 @@ import android.graphics.Paint;
 
 public class Ground {
 
-	public float x = 0, y = 240;
+	public float x, y;
 	public int width;
 	Bitmap groundBmp;
 	Paint p = new Paint();
 	
 	public Ground(Resources r)
 	{	
+		x = 0;
+		y = 240;
 		groundBmp=BitmapFactory.decodeResource(r, R.drawable.grass);
 		width = groundBmp.getWidth();	
 	}
