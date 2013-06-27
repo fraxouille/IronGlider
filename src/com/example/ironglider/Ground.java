@@ -4,23 +4,17 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
 public class Ground {
 
-	public float x, y;
+	public float x = 0, y = 240;
 	public int width;
 	Bitmap groundBmp;
-	Paint paintWhite = new Paint();
+	Paint p = new Paint();
 	
 	public Ground(Resources r)
-	{
-		x = 0;
-		y = 220;		
-		paintWhite.setColor(Color.WHITE);
-		paintWhite.setTextSize(16);
-
+	{	
 		groundBmp=BitmapFactory.decodeResource(r, R.drawable.grass);
 		width = groundBmp.getWidth();	
 	}
@@ -37,9 +31,9 @@ public class Ground {
 	
 	public void draw(Canvas c)
 	{
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 3; i++)
 		{
-			c.drawBitmap(groundBmp, x + i * width, y, paintWhite);
+			c.drawBitmap(groundBmp, x + i * width, y, p);
 		}
 	}
 	

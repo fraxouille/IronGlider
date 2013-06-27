@@ -1,6 +1,8 @@
 package com.example.ironglider;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,6 +18,7 @@ public class GameView extends View {
 	Ground ground;
 	Clouds clouds;
 	Background background;
+	Bitmap pausebmp;
 	Paint paintBlack= new Paint();
 	Paint paintWhite = new Paint();
 	Paint paintRed = new Paint();
@@ -27,13 +30,14 @@ public class GameView extends View {
 	public GameView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
+		pausebmp = BitmapFactory.decodeResource(getResources(), R.drawable.pause);
 		paintBlack.setColor(Color.BLACK);
 		paintWhite.setColor(Color.WHITE);
 		paintWhite.setTextSize(16);
 		paintRed.setColor(Color.RED);
 		paintRed.setStrokeWidth(4);
 		paintFuel.setColor(Color.GREEN);
-		paintFuel.setStrokeWidth(10);
+		paintFuel.setStrokeWidth(15);
 		this.setOnTouchListener(clic);
 	}
 	
@@ -45,7 +49,8 @@ public class GameView extends View {
 		ground.draw(c);
 		clouds.draw(c);
 		iron.draw(c);
-    	c.drawLine(460, 250, 460, 250-GameContent.fuel, paintFuel);
+    	c.drawLine(460, 230, 460, 230-GameContent.fuel, paintFuel);
+    	c.drawBitmap(pausebmp, this.getWidth()-50, 0, paintWhite);
 		c.drawText("x=" + sensors[0] + "  y=" + sensors[1]+ "  z=" + sensors[2] + "Fuel="+ GameContent.fuel, 0, 20, paintBlack);
 
 		switch (Game.gameState)
@@ -100,7 +105,7 @@ public class GameView extends View {
 		    	{
 		    	case launch : {Game.gameState = Game.GameState.fly; pauseTimer = 0; break;}
 		    	case fly : {
-		    		if (pauseTimer >=10 && e.getX() < 50 && e.getY() < 50)
+		    		if (pauseTimer >=10 && e.getX() > v.getWidth()-100 && e.getY() < 80)
 		    			{Game.gameState = Game.GameState.pause; pauseTimer = 0; break;}
 		    		else {
 		    			if (GameContent.fuel > 0)

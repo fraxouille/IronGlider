@@ -8,8 +8,9 @@ import android.graphics.Paint;
 
 public class Iron {
 
-	public final int defaultY = 80;
-	private final int groundHeight = 250;
+	public final int defaultX = -50;
+	public final int defaultY = 150;
+	private final int groundHeight = 300;
 	public float x, y;
 	public float xView, yView;
 	public int width, height;
@@ -19,14 +20,14 @@ public class Iron {
 	
 	public Iron(Resources r)
 	{
-		x = -30;
+		x = defaultX;
 		y = defaultY;
 		yView = y;
 		xView = x;
 		ironbmp = BitmapFactory.decodeResource(r, R.drawable.iron);
 		this.width = ironbmp.getWidth();
 		this.height = ironbmp.getHeight();
-		steambmp = BitmapFactory.decodeResource(r, R.drawable.iron);
+		steambmp = BitmapFactory.decodeResource(r, R.drawable.vapeur);
 	}
 
 	public void update(float initialSpeed, float launchAngle, float gravity, int XPositionOfFlyingIron,float time)
@@ -34,7 +35,7 @@ public class Iron {
 		if (isSteamOn && GameContent.fuel > 0)
 			GameContent.fuel -= 1;		
 		
-		x = (float) (initialSpeed * Math.cos(launchAngle)) * time + 20;
+		x = (float) (initialSpeed * Math.cos(launchAngle)) * time + defaultX;
 		
 		if (x < XPositionOfFlyingIron)
 			xView = x;	
@@ -58,7 +59,7 @@ public class Iron {
 	public void draw(Canvas c)
 	{
 		if (isSteamOn && GameContent.fuel > 0)
-			c.drawBitmap(steambmp, xView + 30, yView + 50, p);			
+			c.drawBitmap(steambmp, xView + 62, yView + 50, p);		
 		c.drawBitmap(ironbmp, xView, yView, p);
 	}
 	
