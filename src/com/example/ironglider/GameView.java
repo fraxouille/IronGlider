@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 
@@ -13,12 +14,15 @@ public class GameView extends View {
 	// 480 * 320
 	Iron iron;
 	Ground ground;
+	Clouds clouds;
+	Background background;
 	Paint paintBlack= new Paint();
 	Paint paintWhite = new Paint();
 	Paint paintRed = new Paint();
-	Paint paintBrown = new Paint();
+	Paint paintFuel = new Paint();
 	float[] sensors = new float[3];
 	float[] launchLine;
+	int pauseTimer = 0;
 	
 	public GameView(Context context, AttributeSet attrs)
 	{
@@ -28,21 +32,21 @@ public class GameView extends View {
 		paintWhite.setTextSize(16);
 		paintRed.setColor(Color.RED);
 		paintRed.setStrokeWidth(4);
-		paintBrown.setColor(Color.rgb(150, 90, 10));
-		paintBrown.setStrokeWidth(10);
-		this.setOnClickListener(clic);
+		paintFuel.setColor(Color.GREEN);
+		paintFuel.setStrokeWidth(10);
+		this.setOnTouchListener(clic);
 	}
 	
 	@Override
 	protected void onDraw(Canvas c)
 	{
 		super.onDraw(c);
-		for (int i = 0; i < 10; i++)
-		{
-			c.drawBitmap(ground.groundBmp, ground.x + i * ground.width, ground.y, paintWhite);
-		}
-		c.drawBitmap(iron.ironbmp, iron.xView, iron.yView, iron.p);
-		c.drawText("x=" + sensors[0] + "  y=" + sensors[1]+ "  z=" + sensors[2], 0, 20, paintBlack);
+		background.draw(c);
+		ground.draw(c);
+		clouds.draw(c);
+		iron.draw(c);
+    	c.drawLine(460, 250, 460, 250-GameContent.fuel, paintFuel);
+		c.drawText("x=" + sensors[0] + "  y=" + sensors[1]+ "  z=" + sensors[2] + "Fuel="+ GameContent.fuel, 0, 20, paintBlack);
 
 		switch (Game.gameState)
 		{
@@ -53,7 +57,7 @@ public class GameView extends View {
 			}
 			case fly:
 			{
-				
+		    	pauseTimer++;
 				break;
 			}
 			case ground:
@@ -65,16 +69,19 @@ public class GameView extends View {
 			{
 				c.drawRect(getWidth()/2 - 60, getHeight()/2-20, getWidth()/2 +60, getHeight()/2 +20, paintBlack);
 				c.drawText("PAUSE", getWidth()/2 - 25, getHeight()/2 +5, paintWhite);
+				pauseTimer++;
 				break;
 			}
 		}
 	}
 	
-	public void registerObject(Iron i, float[] l, Ground g)
+	public void registerObject(GameContent g)
 	{
-		this.iron = i;
-		this.launchLine = l;
-		this.ground = g;
+		this.iron = g.iron;
+		this.ground = g.ground;
+		this.launchLine = g.launchLine;
+		this.clouds = g.clouds;
+		this.background = g.background;
 	}
 	
 	public void debug(float[] s)
@@ -84,16 +91,35 @@ public class GameView extends View {
 		sensors[2] = s[2];
 	}
 	
-	private OnClickListener clic = new OnClickListener() {
-	    public void onClick(View v) {
-	    	switch (Game.gameState)
+	private OnTouchListener clic = new OnTouchListener() {
+	    public boolean onTouch(View v, MotionEvent e) {
+	    	
+	    	if (e.getAction() == MotionEvent.ACTION_DOWN)
 	    	{
-	    	case launch : {Game.gameState = Game.GameState.fly; break;}
-	    	case fly : {Game.gameState = Game.GameState.pause; break;}
-	    	case ground : break;
-	    	case pause : {Game.gameState = Game.GameState.fly; break;}
+		    	switch (Game.gameState)
+		    	{
+		    	case launch : {Game.gameState = Game.GameState.fly; pauseTimer = 0; break;}
+		    	case fly : {
+		    		if (pauseTimer >=10 && e.getX() < 50 && e.getY() < 50)
+		    			{Game.gameState = Game.GameState.pause; pauseTimer = 0; break;}
+		    		else {
+		    			if (GameContent.fuel > 0)
+		    				iron.isSteamOn = true;
+		    			else
+		    				iron.isSteamOn = false;
+		    		}
+		    	}
+		    	case ground : break;
+		    	case pause : {
+		    		if (pauseTimer >=10)
+		    			{Game.gameState = Game.GameState.fly; pauseTimer=0; break;}}
+		    	}
 	    	}
-
+	    	else if (e.getAction() == MotionEvent.ACTION_UP)
+	    	{
+	    		iron.isSteamOn = false;
+	    	}
+	    	return true;
 	    }
 	};
 	

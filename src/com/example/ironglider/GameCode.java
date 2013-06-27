@@ -4,28 +4,34 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
-import android.view.View;
 
 public class GameCode implements Runnable, SensorEventListener {
 	
 	GameView gameView;
 	Iron iron;
+	final int XPositionOfFlyingIron = 150;
 	Ground ground;
+	Clouds clouds;
+	Background background;
 	float[] launchLine;
 	SensorManager sm;
 	float[] sensors = new float[3];
 	float launchAngle;
 	float initialSpeed = 100f;
-	boolean launching = false;
 	float time = 0;
+	float gravity = 9.8f;
+	float fuel;
 	
-	public GameCode(GameView v, Iron i, Ground g, float[] l,SensorManager sm)
+	public GameCode(GameView v, GameContent g,SensorManager sm)
 	{
+		GameContent.fuel = 100;
 		this.gameView = v;
-		this.iron = i;
-		this.ground = g;
-		this.launchLine = l;
+		this.iron = g.iron;
+		this.ground = g.ground;
+		this.launchLine = g.launchLine;
+		this.clouds = g.clouds;
+		this.background = g.background;
+		
 		this.sm = sm;
 		sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
 	}	
@@ -40,13 +46,14 @@ public class GameCode implements Runnable, SensorEventListener {
 	
 	public void run()
 	{
-		Update(gameView, iron);
+		Update();
 		Draw();
 	}
 	
-	private void Update(View view, Iron iron)
+	private void Update()
 	{
 		gameView.debug(sensors);
+		
 		switch (Game.gameState)
 		{
 		case launch:{
@@ -56,28 +63,22 @@ public class GameCode implements Runnable, SensorEventListener {
 			
 			launchLine[0] = 100*(float) Math.cos(launchAngle);
 			launchLine[1] = 100*(float) Math.sin(launchAngle);
-			Log.i("ANGLE", String.valueOf(launchAngle));
+
 			break;}
 		
 		case fly:{
-			iron.x = (float) (initialSpeed * Math.cos(launchAngle)) * time + 20;
-			if (iron.x < 200)
-				iron.xView = iron.x;
-			else
-				ground.x = - iron.x + 200;
-			
-			if (ground.x < - ground.width)
-				ground.x -= (int)(ground.x / ground.width) * ground.width;
-			
-			iron.y = (float) -((-9.8/2 * time * time) + (initialSpeed * Math.sin(launchAngle) * time)) + iron.defaultY;
-			iron.yView = iron.y;
-			
-			if (iron.y >= 220 - iron.height)
-			{
-				iron.y = 220;
-				Game.gameState = Game.GameState.ground;
+			if (iron.isSteamOn)
+				{gravity -= 0.1;}
+			else{
+				gravity += 0.1;
+				if (gravity > 9.8f) gravity = 9.8f;
 			}
-			time+=0.2;	
+			
+			iron.update(initialSpeed, launchAngle, gravity, XPositionOfFlyingIron, time);
+			ground.update(iron.x, XPositionOfFlyingIron);
+			clouds.update();
+			
+			time+=0.2;
 			break;}
 		
 		case ground:{
