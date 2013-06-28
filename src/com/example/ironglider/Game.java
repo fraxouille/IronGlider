@@ -18,6 +18,7 @@ public class Game extends Activity {
 	
 	final long FPS = 20;
 	Timer timer = new Timer();
+	GameContent g;
 	GameCode gameCode;
 	boolean gameIsRunning;
 	SensorManager sm;
@@ -26,15 +27,15 @@ public class Game extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_screen);
+
+		sm = (SensorManager)getSystemService(android.content.Context.SENSOR_SERVICE);	
 		GameView gameView = (GameView) findViewById(R.id.gameView);
 		gameState = GameState.launch;
+		gameIsRunning = true;
 		
-		sm = (SensorManager)getSystemService(android.content.Context.SENSOR_SERVICE);		
-		GameContent g = new GameContent(getResources());
+		g = new GameContent(getResources());
 		gameCode = new GameCode(gameView, g, sm);
 		gameView.registerObject(g);
-		
-		gameIsRunning = true;
 	}
 	
 	@Override
@@ -46,9 +47,13 @@ public class Game extends Activity {
 			public void run()
 			{
 				if (gameState == GameState.stop)
+				{
+					gameIsRunning = false;
 					finish();
+				}
 				if (gameState == GameState.restart)
 				{
+					gameIsRunning = false;
 					finish();
 					startActivity(getIntent());
 				}

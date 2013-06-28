@@ -7,18 +7,16 @@ import android.hardware.SensorManager;
 
 public class GameCode implements Runnable, SensorEventListener {
 	
+	final int XPositionOfFlyingIron = 150;
+	SensorManager sm;
 	GameView gameView;
 	Iron iron;
-	final int XPositionOfFlyingIron = 150;
 	Ground ground;
 	Clouds clouds;
 	Background background;
 	float[] launchLine;
-	SensorManager sm;
 	float[] sensors = new float[3];
-	float launchAngle;
-	float initialSpeed;
-	float time;
+	float launchAngle, initialSpeed, time;
 	
 	public GameCode(GameView v, GameContent g,SensorManager sm)
 	{
@@ -34,7 +32,7 @@ public class GameCode implements Runnable, SensorEventListener {
 		
 		this.sm = sm;
 		sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
-	}	
+	}
 
 	public void onSensorChanged(SensorEvent event) {
 		sensors[0] = event.values[0];
@@ -52,7 +50,7 @@ public class GameCode implements Runnable, SensorEventListener {
 	
 	private void Update()
 	{
-		gameView.debug(sensors);
+		//gameView.debug(sensors);
 		
 		switch (Game.gameState)
 		{
@@ -63,7 +61,6 @@ public class GameCode implements Runnable, SensorEventListener {
 			
 			launchLine[0] = 100*(float) Math.cos(launchAngle);
 			launchLine[1] = 100*(float) Math.sin(launchAngle);
-
 			break;}
 		
 		case fly:{		

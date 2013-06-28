@@ -8,6 +8,7 @@ import android.graphics.Paint;
 
 public class Iron {
 
+	private Bitmap ironbmp, steambmp;
 	public final int defaultX = -50;
 	public final int defaultY = 220;
 	private final int groundHeight = 300;
@@ -15,7 +16,6 @@ public class Iron {
 	private float verticalSpeed;
 	public float xView, yView;
 	public int width, height;
-	private Bitmap ironbmp, steambmp;
 	private Paint p = new Paint();
 	public boolean isSteamOn = false;
 	private boolean firstStart = true;

@@ -8,9 +8,9 @@ import android.graphics.Paint;
 
 public class Ground {
 
+	private Bitmap groundBmp;
 	public float x, y;
 	public int width;
-	Bitmap groundBmp;
 	Paint p = new Paint();
 	
 	public Ground(Resources r)

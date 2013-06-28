@@ -58,7 +58,7 @@ public class GameView extends View {
 		iron.draw(c);
     	c.drawLine(460, 230, 460, 230-GameContent.fuel, paintFuel);
     	c.drawBitmap(pausebmp, this.getWidth()-50, 0, paintWhite);
-		c.drawText("x=" + sensors[0] + "  y=" + sensors[1]+ "  z=" + sensors[2] + "Fuel="+ GameContent.fuel, 0, 20, paintBlack);
+		//c.drawText("x=" + sensors[0] + "  y=" + sensors[1]+ "  z=" + sensors[2] + "Fuel="+ GameContent.fuel, 0, 20, paintBlack);
 
 		switch (Game.gameState)
 		{
@@ -102,12 +102,12 @@ public class GameView extends View {
 		this.background = g.background;
 	}
 	
-	public void debug(float[] s)
+	/*public void debug(float[] s)
 	{
 		sensors[0] = s[0];
 		sensors[1] = s[1];
 		sensors[2] = s[2];
-	}
+	}*/
 	
 	private OnTouchListener clic = new OnTouchListener() {
 	    public boolean onTouch(View v, MotionEvent e) {
